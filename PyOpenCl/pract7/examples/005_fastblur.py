@@ -1,6 +1,6 @@
 import pyopencl as cl
 import numpy as np
-import Image as im
+from PIL import Image as im
 
 def show_single_buffer(queue, n_pix, buffer):
 	temp = np.empty(n_pix).astype(np.uint8)
@@ -9,7 +9,7 @@ def show_single_buffer(queue, n_pix, buffer):
 	test.putdata(temp)
 	test.show()
 
-cat = im.open('data/cat.jpg').convert('RGBA').resize((640,480))
+cat = im.open('cat.jpg').convert('RGBA').resize((640,480))
 pix = np.array(list(cat.getdata())).astype(np.uint8)
 
 ctx = cl.create_some_context()
@@ -87,7 +87,7 @@ wgs = cl.Kernel(prg, 'blur_channel').get_work_group_info(cl.kernel_work_group_in
 		ctx.get_info(cl.context_info.DEVICES)[0])
 n_local = (16,12)
 if n_local[0]*n_local[1] > wgs:
-	print "Reduce the n_local variable size please!"
+	print("Reduce the n_local variable size please!")
 
 nn_buf = cl.LocalMemory((n_local[0]+2)*(n_local[1]+2))
 n_workers = (cat.size[0], cat.size[1])
